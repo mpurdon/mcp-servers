@@ -32,6 +32,17 @@ It will let you pick a host (Desktop / Cowork / Code), choose which servers to
 enable, collect required credentials, and register them — idempotently, with a
 `--dry-run` flag to preview the change first.
 
+### Public and private servers
+
+This repo holds the **public** servers (published to npm). Proprietary or
+work-specific servers live in their own **private** repos — their code never
+enters this public repo. A private server registers itself locally by writing a
+descriptor to `~/.mpurdon-mcp/servers.d/<key>.json` (each private repo ships a
+`*-register` command for this). The configurator **auto-discovers** those and
+offers them in the same selectable list as the public servers (marked
+`(private)`), launching them from their local path instead of npm. One install
+experience spans both tiers.
+
 ### Manual registration
 
 Every host uses the same `mcpServers` schema. Add an entry like:

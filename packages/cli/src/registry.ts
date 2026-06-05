@@ -15,10 +15,24 @@ export interface EnvVar {
 export interface ServerDef {
   /** The key used under `mcpServers` and as the registered server name. */
   key: string;
-  /** Published npm package, invoked via `npx -y <packageName>`. */
-  packageName: string;
+  /**
+   * Published npm package, invoked via `npx -y <packageName>`. Present for
+   * public servers. Private/local servers omit this and provide `launch`.
+   */
+  packageName?: string;
+  /**
+   * Explicit launch command for private/local servers (e.g. a built dist on
+   * disk). When set it overrides the npx invocation. Public servers leave this
+   * undefined and are launched via `npx -y <packageName>`.
+   */
+  launch?: { command: string; args: string[] };
   title: string;
   description: string;
+  /**
+   * Origin of this definition: a built-in public server shipped with the CLI,
+   * or one discovered from a locally-installed private descriptor.
+   */
+  source?: "builtin" | "local";
   /** Environment variables the server reads. */
   env: EnvVar[];
   /**
@@ -114,6 +128,12 @@ export const SERVERS: ServerDef[] = [
     ],
   },
 ];
+
+/** Built-in (public, npm-published) servers, tagged with their source. */
+export const BUILTIN_SERVERS: ServerDef[] = SERVERS.map((s) => ({
+  ...s,
+  source: "builtin",
+}));
 
 export function findServer(key: string): ServerDef | undefined {
   return SERVERS.find((s) => s.key === key);

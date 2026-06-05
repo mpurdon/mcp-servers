@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { configure } from "./configure.js";
-import { SERVERS } from "./registry.js";
+import { BUILTIN_SERVERS } from "./registry.js";
+import { allServers } from "./discovery.js";
 
 const HELP = `@mpurdon/mcp-servers — install & configure @mpurdon MCP servers
 
@@ -19,8 +20,10 @@ Options:
 `;
 
 function list(): void {
-  for (const s of SERVERS) {
-    process.stdout.write(`${s.key.padEnd(12)} ${s.packageName}\n`);
+  for (const s of allServers(BUILTIN_SERVERS)) {
+    const origin =
+      s.source === "local" ? "(private, local)" : (s.packageName ?? "");
+    process.stdout.write(`${s.key.padEnd(12)} ${origin}\n`);
     process.stdout.write(`${" ".repeat(12)} ${s.description}\n`);
   }
 }

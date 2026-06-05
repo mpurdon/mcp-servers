@@ -1,6 +1,7 @@
 import * as p from "@clack/prompts";
 import { HOSTS, getHost, type HostId } from "./hosts.js";
-import { SERVERS, type ServerDef } from "./registry.js";
+import { BUILTIN_SERVERS, type ServerDef } from "./registry.js";
+import { allServers } from "./discovery.js";
 import {
   readConfig,
   planChanges,
@@ -24,10 +25,11 @@ function entryFor(
   server: ServerDef,
   env: Record<string, string>,
 ): McpServerEntry {
-  const entry: McpServerEntry = {
-    command: "npx",
-    args: ["-y", server.packageName],
-  };
+  // Local/private servers carry an explicit launch command (e.g. a built dist
+  // on disk); public servers run from npm via npx.
+  const entry: McpServerEntry = server.launch
+    ? { command: server.launch.command, args: [...server.launch.args] }
+    : { command: "npx", args: ["-y", server.packageName!] };
   if (Object.keys(env).length > 0) entry.env = env;
   return entry;
 }
@@ -64,14 +66,16 @@ export async function configure(opts: { dryRun: boolean }): Promise<void> {
   const targetPath = host.resolvePath({ workspaceDir });
   if (!targetPath) bail("Could not determine the config file path.");
 
-  // 2. Pick servers.
+  // 2. Pick servers — built-in public servers plus any locally-registered
+  //    private servers discovered under ~/.mpurdon-mcp/servers.d/.
+  const servers = allServers(BUILTIN_SERVERS);
   const chosen = ensure(
     await p.multiselect<string>({
       message: "Which servers do you want to enable?",
       required: true,
-      options: SERVERS.map((s) => ({
+      options: servers.map((s) => ({
         value: s.key,
-        label: s.title,
+        label: s.source === "local" ? `${s.title} (private)` : s.title,
         hint: s.description,
       })),
     }),
@@ -81,7 +85,7 @@ export async function configure(opts: { dryRun: boolean }): Promise<void> {
   const desired: Record<string, McpServerEntry> = {};
   const notes: string[] = [];
   for (const key of chosen) {
-    const server = SERVERS.find((s) => s.key === key)!;
+    const server = servers.find((s) => s.key === key)!;
     const env: Record<string, string> = {};
     for (const v of server.env) {
       const value = v.secret

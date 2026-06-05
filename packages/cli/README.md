@@ -17,10 +17,25 @@ npx @mpurdon/mcp-servers configure --dry-run
 npx @mpurdon/mcp-servers list
 ```
 
+## Public and private servers
+
+The configurator offers two tiers in one selectable list:
+
+- **Public servers** — the npm-published `@mpurdon/mcp-*` packages, launched via `npx`.
+- **Private/local servers** — proprietary or work-specific servers whose code lives
+  in a separate private repo. They register themselves by dropping a descriptor in
+  `~/.mpurdon-mcp/servers.d/<key>.json` (each private repo provides its own
+  `*-register` command). The configurator auto-discovers these and launches them by
+  their local path. No proprietary detail ever lives in this public repo — only the
+  descriptor on your machine.
+
+So `configure` shows everything you have installed — public and private — as one list,
+marking private ones `(private)`.
+
 ## What it does
 
 1. **Detects** your installed Claude host(s) and lets you choose one.
-2. Lets you **multi-select** which servers to enable.
+2. Lets you **multi-select** which servers to enable (public + discovered private).
 3. **Prompts** for each server's required credentials (secrets are masked) — sourced
    from the server registry, so the prompts always match what each server needs.
 4. **Merges** the entries into the host's `mcpServers` config without clobbering

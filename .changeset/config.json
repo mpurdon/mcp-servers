@@ -7,9 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@mpurdon/mcp-monorepo",
-    "@mpurdon/tsconfig",
-    "@mpurdon/eslint-config"
-  ]
+  "ignore": []
 }

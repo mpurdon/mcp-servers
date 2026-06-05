@@ -1,0 +1,52 @@
+{
+  "name": "@mpurdon/mcp-mongodb",
+  "version": "0.1.0",
+  "description": "Local stdio MCP server for MongoDB with multi-environment support and production write protection.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mongodb": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mongodb",
+    "claude"
+  ],
+  "license": "MIT",
+  "author": "Matthew Purdon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpurdon/mcp-servers.git",
+    "directory": "packages/mongodb"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "mongodb": "^6.10.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@mpurdon/eslint-config": "workspace:*",
+    "@mpurdon/tsconfig": "workspace:*",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

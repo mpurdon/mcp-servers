@@ -12,27 +12,18 @@ export interface EnvVar {
   default?: string;
 }
 
-export interface ServerDef {
+/** An explicit launch command (used by private/local servers). */
+export interface Launch {
+  command: string;
+  args: string[];
+}
+
+/** Fields common to every server definition, public or private. */
+interface ServerBase {
   /** The key used under `mcpServers` and as the registered server name. */
   key: string;
-  /**
-   * Published npm package, invoked via `npx -y <packageName>`. Present for
-   * public servers. Private/local servers omit this and provide `launch`.
-   */
-  packageName?: string;
-  /**
-   * Explicit launch command for private/local servers (e.g. a built dist on
-   * disk). When set it overrides the npx invocation. Public servers leave this
-   * undefined and are launched via `npx -y <packageName>`.
-   */
-  launch?: { command: string; args: string[] };
   title: string;
   description: string;
-  /**
-   * Origin of this definition: a built-in public server shipped with the CLI,
-   * or one discovered from a locally-installed private descriptor.
-   */
-  source?: "builtin" | "local";
   /** Environment variables the server reads. */
   env: EnvVar[];
   /**
@@ -48,9 +39,28 @@ export interface ServerDef {
   setupNote?: string;
 }
 
-export const SERVERS: ServerDef[] = [
+/** A built-in public server, launched via `npx -y <packageName>`. */
+export interface PublicServer extends ServerBase {
+  source: "builtin";
+  packageName: string;
+}
+
+/** A private/local server, launched via an explicit command on disk. */
+export interface LocalServer extends ServerBase {
+  source: "local";
+  launch: Launch;
+}
+
+/**
+ * A server definition is exactly one of the two variants — the `source`
+ * discriminant tells you which fields are present (no all-optional ambiguity).
+ */
+export type ServerDef = PublicServer | LocalServer;
+
+export const BUILTIN_SERVERS: PublicServer[] = [
   {
     key: "mongodb",
+    source: "builtin",
     packageName: "@mpurdon/mcp-mongodb",
     title: "MongoDB",
     description:
@@ -65,6 +75,7 @@ export const SERVERS: ServerDef[] = [
   },
   {
     key: "freshbooks",
+    source: "builtin",
     packageName: "@mpurdon/mcp-freshbooks",
     title: "FreshBooks",
     description: "FreshBooks invoices, clients, items, and time entries.",
@@ -88,6 +99,7 @@ export const SERVERS: ServerDef[] = [
   },
   {
     key: "sumologic",
+    source: "builtin",
     packageName: "@mpurdon/mcp-sumologic",
     title: "Sumo Logic",
     description: "Run Sumo Logic searches and inspect results.",
@@ -115,6 +127,7 @@ export const SERVERS: ServerDef[] = [
   },
   {
     key: "github",
+    source: "builtin",
     packageName: "@mpurdon/mcp-github",
     title: "GitHub",
     description: "GitHub org/repo/PR/issue and Actions workflow operations.",
@@ -128,13 +141,3 @@ export const SERVERS: ServerDef[] = [
     ],
   },
 ];
-
-/** Built-in (public, npm-published) servers, tagged with their source. */
-export const BUILTIN_SERVERS: ServerDef[] = SERVERS.map((s) => ({
-  ...s,
-  source: "builtin",
-}));
-
-export function findServer(key: string): ServerDef | undefined {
-  return SERVERS.find((s) => s.key === key);
-}

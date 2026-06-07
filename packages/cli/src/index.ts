@@ -21,8 +21,7 @@ Options:
 
 function list(): void {
   for (const s of allServers(BUILTIN_SERVERS)) {
-    const origin =
-      s.source === "local" ? "(private, local)" : (s.packageName ?? "");
+    const origin = s.source === "local" ? "(private, local)" : s.packageName;
     process.stdout.write(`${s.key.padEnd(12)} ${origin}\n`);
     process.stdout.write(`${" ".repeat(12)} ${s.description}\n`);
   }

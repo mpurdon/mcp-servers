@@ -27,9 +27,10 @@ function entryFor(
 ): McpServerEntry {
   // Local/private servers carry an explicit launch command (e.g. a built dist
   // on disk); public servers run from npm via npx.
-  const entry: McpServerEntry = server.launch
-    ? { command: server.launch.command, args: [...server.launch.args] }
-    : { command: "npx", args: ["-y", server.packageName!] };
+  const entry: McpServerEntry =
+    server.source === "local"
+      ? { command: server.launch.command, args: [...server.launch.args] }
+      : { command: "npx", args: ["-y", server.packageName] };
   if (Object.keys(env).length > 0) entry.env = env;
   return entry;
 }
@@ -37,16 +38,19 @@ function entryFor(
 export async function configure(opts: { dryRun: boolean }): Promise<void> {
   p.intro("@mpurdon/mcp-servers configure");
 
-  // 1. Pick a host (default to a detected one).
-  const detected = HOSTS.find((h) => h.id !== "cowork" && h.detect());
+  // 1. Pick a host (default to a detected one). Detect once — each detect()
+  //    may hit the filesystem, so don't call it twice per host.
+  const detectedIds = new Set(
+    HOSTS.filter((h) => h.id !== "cowork" && h.detect()).map((h) => h.id),
+  );
   const hostId = ensure(
     await p.select<HostId>({
       message: "Which Claude host do you want to configure?",
-      initialValue: detected?.id ?? "desktop",
+      initialValue: [...detectedIds][0] ?? "desktop",
       options: HOSTS.map((h) => ({
         value: h.id,
         label: h.title,
-        hint: h.id !== "cowork" && h.detect() ? "detected" : undefined,
+        hint: detectedIds.has(h.id) ? "detected" : undefined,
       })),
     }),
   );
@@ -88,21 +92,19 @@ export async function configure(opts: { dryRun: boolean }): Promise<void> {
     const server = servers.find((s) => s.key === key)!;
     const env: Record<string, string> = {};
     for (const v of server.env) {
-      const value = v.secret
-        ? ensure(
-            await p.password({
-              message: `${server.title} — ${v.label}${v.required ? "" : " (optional)"}`,
-              validate: (val) => (v.required && !val ? "Required." : undefined),
-            }),
-          )
-        : ensure(
-            await p.text({
-              message: `${server.title} — ${v.label}${v.required ? "" : " (optional)"}`,
+      const message = `${server.title} — ${v.label}${v.required ? "" : " (optional)"}`;
+      const validate = (val: string | undefined) =>
+        v.required && !val ? "Required." : undefined;
+      const value = ensure(
+        v.secret
+          ? await p.password({ message, validate })
+          : await p.text({
+              message,
               placeholder: v.default ?? "",
               defaultValue: v.default ?? "",
-              validate: (val) => (v.required && !val ? "Required." : undefined),
+              validate,
             }),
-          );
+      );
       if (value) env[v.key] = value;
     }
     desired[key] = entryFor(server, env);

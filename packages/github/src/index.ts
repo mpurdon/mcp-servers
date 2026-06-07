@@ -371,6 +371,7 @@ async function getOrgRecentPRs({
     if (message.includes("422") || message.includes("404")) {
       throw new Error(
         `Could not find org "${org}". Use list_my_orgs to see the organizations your account belongs to.`,
+        { cause: err },
       );
     }
     throw err;

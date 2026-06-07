@@ -30,6 +30,7 @@ export function readConfig(path: string): McpConfig {
     throw new Error(
       `Existing config at ${path} is not valid JSON (${(err as Error).message}). ` +
         "Fix or remove it before re-running.",
+      { cause: err },
     );
   }
 }

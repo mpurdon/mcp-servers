@@ -4,9 +4,9 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { ConnectionManager } from "../connection.js";
 import { textResult, errorResult, NonEmptyString } from "./environment.js";
 
-const DocumentSchema = z.record(z.unknown());
-const FilterSchema = z.record(z.unknown());
-const UpdateSchema = z.record(z.unknown());
+const DocumentSchema = z.record(z.string(), z.unknown());
+const FilterSchema = z.record(z.string(), z.unknown());
+const UpdateSchema = z.record(z.string(), z.unknown());
 
 type ConfirmShape = { confirmed?: boolean };
 

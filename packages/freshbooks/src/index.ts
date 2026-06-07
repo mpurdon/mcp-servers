@@ -139,6 +139,7 @@ async function main(): Promise<void> {
       throw new Error(
         `Could not refresh FreshBooks access token at startup (${msg}). ` +
           "Re-run the freshbooks-setup command to re-authorize.",
+        { cause: err },
       );
     }
   }

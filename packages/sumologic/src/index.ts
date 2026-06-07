@@ -17,7 +17,9 @@ import fs from "fs/promises";
 import path from "path";
 
 // Load environment variables
-dotenv.config();
+// quiet: dotenv >=17 prints a tip banner to stdout by default, which would
+// corrupt the stdio JSON-RPC stream. Suppress it.
+dotenv.config({ quiet: true });
 
 // Configuration interfaces
 interface SourceMapping {
@@ -605,7 +607,7 @@ server.tool(
       .string()
       .describe("Name of the application or infrastructure component"),
     parameters: z
-      .record(z.string())
+      .record(z.string(), z.string())
       .optional()
       .describe("Parameters to substitute in the shortcut template"),
     environment: z

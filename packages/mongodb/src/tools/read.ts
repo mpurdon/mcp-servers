@@ -4,12 +4,14 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { ConnectionManager } from "../connection.js";
 import { textResult, errorResult, NonEmptyString } from "./environment.js";
 
-const FilterSchema = z.record(z.unknown()).optional();
+const FilterSchema = z.record(z.string(), z.unknown()).optional();
 const ProjectionSchema = z
-  .record(z.union([z.literal(0), z.literal(1), z.boolean()]))
+  .record(z.string(), z.union([z.literal(0), z.literal(1), z.boolean()]))
   .optional();
-const SortSchema = z.record(z.union([z.literal(1), z.literal(-1)])).optional();
-const PipelineSchema = z.array(z.record(z.unknown()));
+const SortSchema = z
+  .record(z.string(), z.union([z.literal(1), z.literal(-1)]))
+  .optional();
+const PipelineSchema = z.array(z.record(z.string(), z.unknown()));
 
 const DEFAULT_FIND_LIMIT = 20;
 const MAX_FIND_LIMIT = 500;

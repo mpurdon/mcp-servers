@@ -195,6 +195,7 @@ export class FreshBooksClient {
       throw new Error(
         `FreshBooks token refresh failed (${msg}). ` +
           "Re-run the freshbooks-setup command to re-authorize.",
+        { cause: err },
       );
     }
   }

@@ -43,10 +43,10 @@
   "devDependencies": {
     "@mpurdon/eslint-config": "workspace:*",
     "@mpurdon/tsconfig": "workspace:*",
-    "@types/node": "^25.9.2",
-    "eslint": "^10.4.1",
-    "tsx": "^4.19.2",
-    "typescript": "^5.9.3"
+    "@types/node": "^26.1.1",
+    "eslint": "^10.7.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=20"

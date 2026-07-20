@@ -15,6 +15,7 @@ module.exports = {
         "freshbooks",
         "github",
         "milo",
+        "aws-logs",
         "cli",
         "repo",
         "ci",

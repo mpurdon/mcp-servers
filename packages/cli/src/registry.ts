@@ -126,6 +126,22 @@ export const BUILTIN_SERVERS: PublicServer[] = [
     ],
   },
   {
+    key: "aws-logs",
+    source: "builtin",
+    packageName: "@mpurdon/mcp-aws-logs",
+    title: "AWS CloudWatch Logs",
+    description:
+      "Search and aggregate CloudWatch Logs across dev/stg/prd using named AWS profiles.",
+    env: [],
+    configFile: {
+      relativePath: ".aws-logs-mcp/config.json",
+      note:
+        "Create ~/.aws-logs-mcp/config.json mapping each environment to an AWS profile, " +
+        "region, and named log-group targets (chmod 600). Credentials come from your " +
+        "existing ~/.aws profiles. See the @mpurdon/mcp-aws-logs README for the exact shape.",
+    },
+  },
+  {
     key: "github",
     source: "builtin",
     packageName: "@mpurdon/mcp-github",

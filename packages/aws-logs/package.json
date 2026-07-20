@@ -1,0 +1,57 @@
+{
+  "name": "@mpurdon/mcp-aws-logs",
+  "version": "0.1.0",
+  "description": "Local stdio MCP server for searching and aggregating AWS CloudWatch Logs across environments, log groups, and log streams using named AWS profiles.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "aws-logs": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "aws",
+    "cloudwatch",
+    "logs",
+    "logs-insights",
+    "claude"
+  ],
+  "license": "MIT",
+  "author": "Matthew Purdon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpurdon/mcp-servers.git",
+    "directory": "packages/aws-logs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.1091.0",
+    "@aws-sdk/client-sts": "^3.1091.0",
+    "@aws-sdk/credential-providers": "^3.1091.0",
+    "@modelcontextprotocol/sdk": "^1.18.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@mpurdon/eslint-config": "workspace:*",
+    "@mpurdon/tsconfig": "workspace:*",
+    "@types/node": "^25.9.2",
+    "eslint": "^10.4.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

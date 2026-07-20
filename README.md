@@ -18,6 +18,7 @@ destructive-operation confirmation gates, graceful shutdown).
 | [`@mpurdon/mcp-freshbooks`](./packages/freshbooks) | `npx -y @mpurdon/mcp-freshbooks` | FreshBooks invoice & client operations.                                   |
 | [`@mpurdon/mcp-github`](./packages/github)         | `npx -y @mpurdon/mcp-github`     | GitHub repo/issue/PR operations.                                          |
 | [`@mpurdon/mcp-milo`](./packages/milo)             | `npx -y @mpurdon/mcp-milo`       | Query the Milo MySQL database.                                            |
+| [`@mpurdon/mcp-aws-logs`](./packages/aws-logs)     | `npx -y @mpurdon/mcp-aws-logs`   | Search & aggregate AWS CloudWatch Logs across dev/stg/prd.                |
 
 ## Install
 
